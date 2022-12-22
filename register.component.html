@@ -1,0 +1,230 @@
+<div class="body_bg">
+  <div class="register_main">
+    <div class="row">
+      <div class="col-md-12 col-lg-6 position-relative">
+        <div class="registrations">
+          <div class="registration_logo">
+            <img src="assets/images/register_logo.png" />
+          </div>
+          <form
+            (ngSubmit)="!registerForm.invalid && submitForm()"
+            novalidate
+            [formGroup]="registerForm"
+          >
+            <div class="registraion_fields_main">
+              <h1>Register as an <br />artist</h1>
+              <div class="registraion_field">
+                <label>First name</label>
+                <ng-container
+                  *ngIf="
+                    (form['firstName'].dirty || form['firstName'].touched) &&
+                    form['firstName'].errors
+                  "
+                >
+                  <span
+                    *ngIf="form['firstName'].errors['required']"
+                    class="text-danger error_message mb-0 me-2 fs-10 fw-bold"
+                  >
+                    {{
+                      'errors.is_required'
+                        | translate: { field: 'firstName' | translate }
+                    }}</span
+                  >
+                </ng-container>
+                <input
+                  type="text"
+                  placeholder="Type your name"
+                  formControlName="firstName"
+                />
+              </div>
+              <div class="registraion_field">
+                <label>Last name</label>
+                <ng-container
+                  *ngIf="
+                    (form['lastName'].dirty || form['lastName'].touched) &&
+                    form['lastName'].errors
+                  "
+                >
+                  <span
+                    *ngIf="form['lastName'].errors['required']"
+                    class="text-danger error_message mb-0 me-2 fs-10 fw-bold"
+                  >
+                    {{
+                      'errors.is_required'
+                        | translate: { field: 'lastName' | translate }
+                    }}</span
+                  >
+                </ng-container>
+                <input
+                  type="text"
+                  placeholder="Type your surname"
+                  formControlName="lastName"
+                />
+              </div>
+              <frontend-email-phone
+                [formGroup]="registerForm"
+                [isRegisterWithPhoneNumber]="isRegisterWithPhoneNumber"
+                type="registration"
+                (onTypeChange)="changeLoginType($event)"
+              ></frontend-email-phone>
+              <div class="registraion_field">
+                <label>Password</label>
+                <ng-container
+                  *ngIf="
+                    (form['password'].dirty || form['password'].touched) &&
+                    form['password'].errors
+                  "
+                >
+                  <ng-container
+                    *ngIf="
+                      form['password'].errors['minlength'] ||
+                      form['password'].errors['lowerCase'] ||
+                      form['password'].errors['upperCase'] ||
+                      form['password'].errors['digit'] ||
+                      form['password'].errors['specialChar']
+                    "
+                  >
+                    <div
+                      class="text-danger error_message_password mb-0 me-2 text-end fs-10 fw-bold"
+                    >
+                      <span>{{ 'password_criteria.invalid' | translate }}</span>
+                      <span *ngIf="form['password'].errors['lowerCase']"
+                        >, 1
+                        {{ 'password_criteria.lowercase' | translate }}</span
+                      >
+                      <span *ngIf="form['password'].errors['upperCase']"
+                        >, 1
+                        {{ 'password_criteria.uppercase' | translate }}</span
+                      >
+                      <span *ngIf="form['password'].errors['digit']"
+                        >, 1 {{ 'password_criteria.digit' | translate }}</span
+                      >
+                      <span *ngIf="form['password'].errors['specialChar']"
+                        >, 1{{
+                          'password_criteria.special_character' | translate
+                        }}</span
+                      >
+                      <span *ngIf="form['password'].errors['minlength']"
+                        >,
+                        {{
+                          'password_criteria.minimum' | translate: { count: 8 }
+                        }}</span
+                      >
+                    </div>
+                  </ng-container>
+                </ng-container>
+                <!-- <div>
+                  <input
+                    type="password"
+                    placeholder="Enter your password"
+                    formControlName="password"
+                  />
+                  <span><img src="assets/images/View.png" /></span>
+                </div> -->
+
+                <div>
+                  <input
+                    [type]="showPassword ? 'text' : 'password'"
+                    formControlName="password"
+                    placeholder="Enter your password"
+                    placeholder="{{
+                      'enter_your_field'
+                        | translate: { field: 'password' | translate }
+                    }}"
+                  />
+                  <span class="cursor-pointer eye-cond">
+                    <img
+                      [ngClass]="{ 'd-none': showPassword }"
+                      (click)="showPassword = true"
+                      src="assets/images/View.png"
+                      alt=""
+                    />
+                    <img
+                      [ngClass]="{ 'd-none': !showPassword }"
+                      (click)="showPassword = false"
+                      src="assets/images/close-eye-icon.svg"
+                      alt=""
+                    />
+                  </span>
+                </div>
+              </div>
+
+              <div class="registraion_field">
+                <div class="privacy_policy">
+                  <div class="toggle_btn">
+                    <label class="switch">
+                      <input type="checkbox" checked formControlName="terms" />
+                      <span class="slider round"></span>
+                    </label>
+                  </div>
+                  <div class="privacy_text">
+                    <p>
+                      I accept
+                      <a (click)="showPrivacyTerms('privacy')"
+                        >Privacy Policy</a
+                      >
+                      and
+                      <a (click)="showPrivacyTerms('terms')">Terms of use</a>
+                    </p>
+                  </div>
+                </div>
+                <ng-container
+                  *ngIf="
+                    (form['terms'].dirty || form['terms'].touched) &&
+                    form['terms'].errors
+                  "
+                >
+                  <label
+                    *ngIf="form['terms'].errors['required']"
+                    class="text-danger mb-0 ms-2 fs-10"
+                  >
+                    {{ 'errors.accept_terms_condition' | translate }}</label
+                  >
+                </ng-container>
+              </div>
+              <div class="regster_btn">
+                <button
+                  type="submit"
+                  class="btn-action"
+                  [ngClass]="{
+                    'btn-disabled': registerForm.invalid,
+                    'btn-action': registerForm.valid
+                  }"
+                >
+                  {{ 'register' | translate }}
+                </button>
+                <!-- [disabled]="registerForm.invalid"
+                  [ngClass]="{
+                    'btn-disabled': registerForm.invalid
+                  }" -->
+              </div>
+              <div class="sign_account">
+                <p>
+                  Do you already have an account?
+                  <a routerLink="/sign-in">Sign In</a>
+                </p>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="top_effect for_mobile">
+          <a href="#" class="cross_ic">
+            <img src="assets/images/Cross.png"
+          /></a>
+        </div>
+      </div>
+      <div class="col-md-12 col-lg-6 position-relative sidebar_for_mobile">
+        <div class="top_effect">
+          <a href="#" class="cross_ic">
+            <img src="assets/images/Cross.png"
+          /></a>
+        </div>
+        <div class="register_right_img">
+          <img src="assets/images/register_bg.png" />
+        </div>
+      </div>
+    </div>
+    <!-- Tested Toast functionality with this dummy button, It can be removed -->
+    <!-- <button (click)="showToaster()">show toaster</button> -->
+  </div>
+</div>
